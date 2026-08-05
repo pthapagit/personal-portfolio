@@ -24,7 +24,8 @@ export { projects } from "./projects";
 
 /**
  * Single source of truth for portfolio copy.
- * See content/README.md for the desk-object map and how to add projects.
+ * 2D directory, 3D panels, terminal, and /resume all read from here
+ * (see content/README.md). Do not duplicate this data in components.
  */
 
 export const profile: Profile = {
@@ -141,21 +142,12 @@ export const experience: ExperienceItem[] = [
   },
 ];
 
+/** Newest first — both 2D directory and 3D calendar render this array as-is. */
 export const timeline: TimelineEvent[] = [
   {
-    year: "2017–2018",
-    title: "North Lake College",
-    detail: "Associate degrees in Business Administration and Management.",
-  },
-  {
-    year: "2019–2021",
-    title: "UT Arlington",
-    detail: "Bachelor's in Information Management Systems.",
-  },
-  {
-    year: "2021",
-    title: "Joined TCS",
-    detail: "Started as Software Engineer building full-stack apps and CI/CD to AWS.",
+    year: "2025",
+    title: "TSYS modernization",
+    detail: "Modernization Engineer converting COBOL to Spring Boot with GenAI/RAG workflows.",
   },
   {
     year: "2022",
@@ -163,9 +155,19 @@ export const timeline: TimelineEvent[] = [
     detail: "Application Security Engineer — vulnerability management across 15+ teams.",
   },
   {
-    year: "2025",
-    title: "TSYS modernization",
-    detail: "Modernization Engineer converting COBOL to Spring Boot with GenAI/RAG workflows.",
+    year: "2021",
+    title: "Joined TCS",
+    detail: "Started as Software Engineer building full-stack apps and CI/CD to AWS.",
+  },
+  {
+    year: "2019–2021",
+    title: "UT Arlington",
+    detail: "Bachelor's in Information Management Systems.",
+  },
+  {
+    year: "2017–2018",
+    title: "North Lake College",
+    detail: "Associate degrees in Business Administration and Management.",
   },
 ];
 
@@ -199,6 +201,9 @@ export const certifications: Certification[] = [
 ];
 
 export const resume: ResumeData = {
+  /** HTML résumé page — same data as the PDF. */
+  viewUrl: "/resume",
+  /** Generated on demand from this folder (see app/resume.pdf/route.tsx). */
   downloadUrl: "/resume.pdf",
   education: [
     {
@@ -220,6 +225,6 @@ export const resume: ResumeData = {
   summaryLines: [
     "Software Engineer with 4+ years in financial services: Java/Spring Boot modernization, GenAI/RAG, and AppSec (ex-Citi).",
     "Currently modernizing COBOL → cloud at TCS for TSYS / Global Payments; previously AppSec at Citi.",
-    "Core stack: Java, Spring Boot, Python, LangChain, AWS, Docker, Jenkins, SQL.",
+    "Core stack: Java, Spring Boot, Python, LangChain, AWS, Docker, Jenkins, SQL · open-source: Blink Monitor.",
   ],
 };

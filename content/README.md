@@ -1,56 +1,48 @@
-# Portfolio content (single source of truth)
+# Portfolio content (single editable source)
 
-All visitor-facing copy lives in this folder. The 3D desk panels, CRT terminal,
-2D directory, and SEO metadata all read from here — edit once, everywhere updates.
+**Edit only these files.** 2D, 3D, the CRT terminal, `/resume`, and the recruiter
+PDF download (`/resume.pdf`) all read from here.
 
-## Files
+| File | What to edit |
+| ---- | ------------ |
+| [`index.ts`](index.ts) | Profile, skills, experience, timeline, certifications, résumé summary/education |
+| [`projects.ts`](projects.ts) | Projects |
+| [`types.ts`](types.ts) | Field shapes only (when adding new fields) |
 
-| File | What it drives |
-| ---- | -------------- |
-| [`index.ts`](index.ts) | Profile, sections map, skills, experience, timeline, certifications, resume |
-| [`projects.ts`](projects.ts) | Current projects (Coffee Mug / `PROJECTS` command) |
-| [`types.ts`](types.ts) | TypeScript shapes — change only when adding new fields |
-
-## Desk object map
-
-| Desk object | Section export |
-| ----------- | -------------- |
-| Computer monitor | `profile` (via About / terminal) |
-| Keyboard | `skills` |
-| Notebook | `resume` |
-| Filing cabinet | `experience` |
-| Coffee mug | `projects` (in `projects.ts`) |
-| Desk phone | `profile.links` (Contact) |
-| Calendar | `timeline` |
-| Employee badge | `certifications` |
-| Window | Decorative only (not a section) |
-
-## How to edit
-
-1. Open the matching file above.
-2. Change strings / arrays in place. Keep TypeScript types happy.
-3. Put a PDF at `public/resume.pdf` if you want the Resume download button (already wired via `resume.downloadUrl`).
-4. Commit and redeploy (or push to GitHub if Vercel auto-deploys).
-
-## Adding a project from a GitHub repo
-
-Paste a repo URL in chat, for example:
-
-`https://github.com/PrabeshThapa/my-repo`
-
-Ask the agent to add it. The agent should:
-
-1. Fetch repo metadata (description, language, topics, README summary).
-2. Append one object to the `projects` array in [`projects.ts`](projects.ts):
-
-```ts
-{
-  name: "repo-name",
-  description: "…",
-  tech: ["TypeScript", "…"],
-  link: "https://github.com/…",
-  status: "active", // or "shipped" | "archived"
-}
+```
+content/ ──► 2D directory
+         ├──► 3D desk panels
+         ├──► CRT terminal
+         ├──► /resume (HTML)
+         └──► /resume.pdf (generated for recruiters)
 ```
 
-3. Leave other content files alone unless you asked for more changes.
+There is **no** hand-edited PDF in `public/`. Changing `content/` and redeploying
+updates every surface, including the download.
+
+## Order
+
+Keep **timeline**, **experience**, and **certifications** newest-first (top = latest).
+
+## Desk map
+
+| Desk object | Export |
+| ----------- | ------ |
+| Monitor | `profile` |
+| Keyboard | `skills` |
+| Notebook | `resume` → `/resume` + `/resume.pdf` |
+| Filing cabinet | `experience` |
+| Coffee mug | `projects` |
+| Desk phone | `profile.links` |
+| Calendar | `timeline` |
+| Badge | `certifications` |
+
+## Workflow
+
+1. Edit `content/index.ts` and/or `content/projects.ts`.
+2. Commit and push (Vercel redeploys).
+3. Hard-refresh if a browser tab looks cached.
+
+## Adding a GitHub project
+
+Paste a repo URL in chat; the agent appends one entry to [`projects.ts`](projects.ts).

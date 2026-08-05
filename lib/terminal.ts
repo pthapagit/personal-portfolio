@@ -70,7 +70,9 @@ function resumeLines(): string[] {
     "",
     "EDUCATION",
     ...resume.education.flatMap((e) => [`  ${e.school}`, `  ${e.credential} (${e.period})`]),
-    ...(resume.downloadUrl ? ["", `PRINTABLE COPY: ${resume.downloadUrl}`] : []),
+    "",
+    `LIVE RÉSUMÉ: ${resume.viewUrl ?? "/resume"}`,
+    ...(resume.downloadUrl ? [`PDF DOWNLOAD: ${resume.downloadUrl} (generated from content/)`] : []),
   ];
 }
 

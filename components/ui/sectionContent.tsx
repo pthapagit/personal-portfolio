@@ -11,8 +11,10 @@ import {
 } from "@/content";
 
 /**
- * Section bodies shared by the 3D overlay panels and the 2D directory.
- * Server-safe: no hooks, no browser APIs.
+ * Single renderer for every section body in the app.
+ * Used by: 2D Directory (`Directory2D`) and 3D overlay (`SectionPanel`).
+ * Terminal commands read the same `@/content` exports directly.
+ * Edit data only under `content/` — never duplicate copy here.
  */
 
 const h3 = "font-mono text-[11px] uppercase tracking-[0.2em] text-ink-soft mb-2 mt-5 first:mt-0";
@@ -64,14 +66,27 @@ export function getSectionContent(id: SectionId): ReactNode {
               </p>
             </div>
           ))}
-          {resume.downloadUrl && (
-            <a
-              href={resume.downloadUrl}
-              className="mt-4 inline-block border border-ink/40 px-3 py-1.5 font-mono text-xs uppercase tracking-widest hover:bg-ink hover:text-paper"
-            >
-              Download PDF
-            </a>
-          )}
+          <div className="mt-4 flex flex-wrap gap-2">
+            {resume.viewUrl && (
+              <a
+                href={resume.viewUrl}
+                className="inline-block border border-ink/40 px-3 py-1.5 font-mono text-xs uppercase tracking-widest hover:bg-ink hover:text-paper"
+              >
+                Open full résumé
+              </a>
+            )}
+            {resume.downloadUrl && (
+              <a
+                href={resume.downloadUrl}
+                className="inline-block border border-ink/40 px-3 py-1.5 font-mono text-xs uppercase tracking-widest hover:bg-ink hover:text-paper"
+              >
+                Download PDF
+              </a>
+            )}
+          </div>
+          <p className="mt-2 font-mono text-[10px] uppercase tracking-widest text-ink-soft">
+            Both links are generated from content/ — edit there once for 2D, 3D, and recruiters.
+          </p>
         </div>
       );
 

@@ -67,7 +67,9 @@ export interface Certification {
 }
 
 export interface ResumeData {
-  /** Optional hosted PDF, e.g. /resume.pdf placed in /public. */
+  /** Content-driven HTML résumé (`/resume`). */
+  viewUrl?: string;
+  /** Content-generated PDF download (`/resume.pdf`). */
   downloadUrl?: string;
   education: { school: string; credential: string; period: string }[];
   summaryLines: string[];

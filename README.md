@@ -24,7 +24,8 @@ The monitor behaves like a vintage terminal: `HELP`, `ABOUT`, `PROJECTS`,
 
 ## Editing your content
 
-**Single source of truth:** the [`content/`](content/) folder.
+**Single source of truth:** the [`content/`](content/) folder. Edit there once —
+2D, 3D, `/resume`, and recruiter `/resume.pdf` all update together.
 
 - Bio, skills, experience, timeline, certifications, resume → [`content/index.ts`](content/index.ts)
 - Projects → [`content/projects.ts`](content/projects.ts)
@@ -33,15 +34,13 @@ The monitor behaves like a vintage terminal: `HELP`, `ABOUT`, `PROJECTS`,
 To add a GitHub project later, paste the repo URL in chat and ask the agent to
 append it to `content/projects.ts`.
 
-Drop a `resume.pdf` into `public/` (already linked via `resume.downloadUrl`).
-
 ## Modes
 
 - **3D office** — desktop browsers with WebGL. Skippable cinematic intro,
   clickable hotspots, keyboard-accessible floor directory.
 - **2D directory** — mobile, reduced-motion, or no-WebGL visitors get a
-  server-rendered document version of the same content (also what search
-  engines index). Both modes can switch to the other.
+  server-rendered document version of the **same** `content/` data (also what
+  search engines index). Both modes can switch to the other.
 
 ## Stack
 
