@@ -5,7 +5,6 @@ import { useFrame } from "@react-three/fiber";
 import type { Group } from "three";
 import { C } from "./palette";
 import { CORRIDOR, ROOM } from "@/lib/sceneConfig";
-import Hotspot from "./Hotspot";
 
 const { width: RW, depth: RD, height: RH } = ROOM;
 const { width: CW, height: CH, zStart: CZ0, zEnd: CZ1 } = CORRIDOR;
@@ -18,7 +17,7 @@ export default function Room() {
       <Office />
       <Corridor />
       <WallClock />
-      <BlogWindow />
+      <OfficeWindow />
       <Poster />
     </group>
   );
@@ -229,46 +228,29 @@ function WallClock() {
   );
 }
 
-/** The window opens the Blog section. */
-function BlogWindow() {
+/** Decorative office window (not interactive — no Blog section). */
+function OfficeWindow() {
   return (
-    <Hotspot section="blog">
-      {(hovered) => (
-        <group position={[-2.4, 1.75, -RD / 2 + 0.07]}>
-          <mesh>
-            <boxGeometry args={[1.35, 1.55, 0.06]} />
-            <meshStandardMaterial color={C.trim} roughness={0.6} />
-          </mesh>
-          {/* Pale glow of an outside that may or may not exist */}
-          <mesh position={[0, 0, 0.035]}>
-            <planeGeometry args={[1.2, 1.4]} />
-            <meshStandardMaterial
-              color="#e9f0ea"
-              emissive="#e9f0ea"
-              emissiveIntensity={hovered ? 1.15 : 0.85}
-              toneMapped={false}
-            />
-          </mesh>
-          {/* Blind slats */}
-          {Array.from({ length: 7 }).map((_, i) => (
-            <mesh key={i} position={[0, 0.58 - i * 0.09, 0.05]}>
-              <boxGeometry args={[1.22, 0.035, 0.008]} />
-              <meshStandardMaterial
-                color={C.furniture}
-                emissive={hovered ? C.highlight : "#000000"}
-                emissiveIntensity={hovered ? 0.25 : 0}
-                roughness={0.85}
-              />
-            </mesh>
-          ))}
-          {/* Mullions */}
-          <mesh position={[0, 0, 0.04]}>
-            <boxGeometry args={[0.045, 1.4, 0.02]} />
-            <meshStandardMaterial color={C.trim} roughness={0.6} />
-          </mesh>
-        </group>
-      )}
-    </Hotspot>
+    <group position={[-2.4, 1.75, -RD / 2 + 0.07]}>
+      <mesh>
+        <boxGeometry args={[1.35, 1.55, 0.06]} />
+        <meshStandardMaterial color={C.trim} roughness={0.6} />
+      </mesh>
+      <mesh position={[0, 0, 0.035]}>
+        <planeGeometry args={[1.2, 1.4]} />
+        <meshStandardMaterial color="#e9f0ea" emissive="#e9f0ea" emissiveIntensity={0.85} toneMapped={false} />
+      </mesh>
+      {Array.from({ length: 7 }).map((_, i) => (
+        <mesh key={i} position={[0, 0.58 - i * 0.09, 0.05]}>
+          <boxGeometry args={[1.22, 0.035, 0.008]} />
+          <meshStandardMaterial color={C.furniture} roughness={0.85} />
+        </mesh>
+      ))}
+      <mesh position={[0, 0, 0.04]}>
+        <boxGeometry args={[0.045, 1.4, 0.02]} />
+        <meshStandardMaterial color={C.trim} roughness={0.6} />
+      </mesh>
+    </group>
   );
 }
 

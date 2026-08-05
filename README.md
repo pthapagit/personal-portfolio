@@ -7,17 +7,16 @@ no downloaded models, no copyrighted assets.
 
 ## The desk
 
-| Object          | Section          |
-| --------------- | ---------------- |
-| Computer monitor| About Me (opens a CRT terminal) |
-| Keyboard        | Technical Skills |
-| Notebook        | Resume           |
-| Filing cabinet  | Work Experience  |
-| Coffee mug      | Current Projects |
-| Desk phone      | Contact          |
-| Calendar        | Career Timeline  |
-| Window          | Blog             |
-| Employee badge  | Certifications   |
+| Object           | Section                              |
+| ---------------- | ------------------------------------ |
+| Computer monitor | About Me (opens a CRT terminal)      |
+| Keyboard         | Technical Skills                     |
+| Notebook         | Resume                               |
+| Filing cabinet   | Work Experience                      |
+| Coffee mug       | Current Projects                     |
+| Desk phone       | Contact                              |
+| Calendar         | Career Timeline                      |
+| Employee badge   | Certifications                       |
 
 The monitor behaves like a vintage terminal: `HELP`, `ABOUT`, `PROJECTS`,
 `SKILLS`, `RESUME`, `CONTACT`, `CLEAR`, `ASK <question>` (assistant stub),
@@ -25,10 +24,16 @@ The monitor behaves like a vintage terminal: `HELP`, `ABOUT`, `PROJECTS`,
 
 ## Editing your content
 
-Everything lives in [`content/index.ts`](content/index.ts) — bio, skills,
-experience, projects, timeline, blog posts, certifications. Entries marked
-`TODO` are placeholders. Drop a `resume.pdf` into `public/` and set
-`resume.downloadUrl` to enable the download button.
+**Single source of truth:** the [`content/`](content/) folder.
+
+- Bio, skills, experience, timeline, certifications, resume → [`content/index.ts`](content/index.ts)
+- Projects → [`content/projects.ts`](content/projects.ts)
+- Field guide → [`content/README.md`](content/README.md)
+
+To add a GitHub project later, paste the repo URL in chat and ask the agent to
+append it to `content/projects.ts`.
+
+Drop a `resume.pdf` into `public/` (already linked via `resume.downloadUrl`).
 
 ## Modes
 

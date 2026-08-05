@@ -1,7 +1,6 @@
 import type { ReactNode } from "react";
 import type { SectionId } from "@/content/types";
 import {
-  blogPosts,
   certifications,
   experience,
   profile,
@@ -175,27 +174,6 @@ export function getSectionContent(id: SectionId): ReactNode {
         </ol>
       );
 
-    case "blog":
-      return (
-        <div className="space-y-4">
-          {blogPosts.map((b) => (
-            <div key={b.title}>
-              <p className="font-mono text-xs text-ink-soft">{b.date}</p>
-              <p className="font-medium">
-                {b.link ? (
-                  <a href={b.link} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2">
-                    {b.title}
-                  </a>
-                ) : (
-                  b.title
-                )}
-              </p>
-              <p className="text-sm">{b.summary}</p>
-            </div>
-          ))}
-        </div>
-      );
-
     case "certifications":
       return (
         <ul className="space-y-3">
@@ -204,6 +182,7 @@ export function getSectionContent(id: SectionId): ReactNode {
               <p className="font-medium">{c.name}</p>
               <p className="font-mono text-xs text-ink-soft">
                 {c.issuer} · {c.year}
+                {c.credentialId ? ` · ID ${c.credentialId}` : ""}
               </p>
               {c.link && (
                 <a href={c.link} target="_blank" rel="noopener noreferrer" className="text-sm underline underline-offset-2">

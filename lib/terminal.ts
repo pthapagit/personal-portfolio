@@ -1,5 +1,4 @@
 import {
-  blogPosts,
   certifications,
   experience,
   profile,
@@ -26,7 +25,6 @@ const HELP_LINES = [
   "  RESUME      education & summary",
   "  EXPERIENCE  employment record",
   "  TIMELINE    career chronology",
-  "  BLOG        published notes",
   "  CERTS       certifications on file",
   "  CONTACT     reach the employee",
   "  ASK <q>     query the department advisor",
@@ -89,17 +87,11 @@ function timelineLines(): string[] {
   return timeline.map((t) => `${t.year}  ${t.title} — ${t.detail}`).flatMap((l) => wrap(l));
 }
 
-function blogLines(): string[] {
-  return blogPosts.flatMap((b) => [
-    `${b.date}  ${b.title}`,
-    ...wrap(b.summary, "  "),
-    ...(b.link ? [`  ${b.link}`] : []),
-    "",
-  ]);
-}
-
 function certLines(): string[] {
-  return certifications.map((c) => `${c.year}  ${c.name} — ${c.issuer}`);
+  return certifications.map((c) => {
+    const id = c.credentialId ? ` · ID ${c.credentialId}` : "";
+    return `${c.year}  ${c.name} — ${c.issuer}${id}`;
+  });
 }
 
 function contactLines(): string[] {
@@ -148,8 +140,6 @@ export async function runCommand(raw: string): Promise<TerminalResult> {
       return { lines: experienceLines() };
     case "TIMELINE":
       return { lines: timelineLines() };
-    case "BLOG":
-      return { lines: blogLines() };
     case "CERTS":
     case "CERTIFICATIONS":
       return { lines: certLines() };

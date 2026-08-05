@@ -1,18 +1,30 @@
 import type {
-  BlogPost,
   Certification,
   ExperienceItem,
   Profile,
-  Project,
   ResumeData,
   SectionMeta,
   SkillGroup,
   TimelineEvent,
 } from "./types";
 
+export type {
+  Certification,
+  ExperienceItem,
+  Profile,
+  Project,
+  ResumeData,
+  SectionId,
+  SectionMeta,
+  SkillGroup,
+  TimelineEvent,
+} from "./types";
+
+export { projects } from "./projects";
+
 /**
- * All portfolio content lives in this folder.
- * Sourced from LinkedIn profile (Profile.pdf) and GitHub.
+ * Single source of truth for portfolio copy.
+ * See content/README.md for the desk-object map and how to add projects.
  */
 
 export const profile: Profile = {
@@ -29,7 +41,7 @@ export const profile: Profile = {
   links: {
     github: "https://github.com/PrabeshThapa",
     linkedin: "https://www.linkedin.com/in/prabeshthapa97",
-    email: "nepalichoro2012@gmail.com",
+    email: "Pthapatwenty21@gmail.com",
     phone: "+1 (682) 347-6526",
   },
 };
@@ -42,7 +54,6 @@ export const sections: SectionMeta[] = [
   { id: "projects", label: "Current Projects", object: "Coffee Mug" },
   { id: "contact", label: "Contact", object: "Desk Phone" },
   { id: "timeline", label: "Career Timeline", object: "Calendar" },
-  { id: "blog", label: "Blog", object: "Window" },
   { id: "certifications", label: "Certifications", object: "Employee Badge" },
 ];
 
@@ -76,6 +87,7 @@ export const skills: SkillGroup[] = [
       "GitLab CI/CD",
       "Apache Airflow",
       "Maven",
+      "Gradle",
     ],
   },
   {
@@ -84,7 +96,7 @@ export const skills: SkillGroup[] = [
   },
   {
     category: "AppSec & Quality",
-    items: ["BlackDuck", "Snyk", "SonarQube", "Selenium", "Postman", "NVD API"],
+    items: ["BlackDuck", "Snyk", "SonarQube", "Postman", "NVD API"],
   },
 ];
 
@@ -129,38 +141,6 @@ export const experience: ExperienceItem[] = [
   },
 ];
 
-export const projects: Project[] = [
-  {
-    name: "COBOL → Java modernization (TSYS)",
-    description:
-      "Enterprise legacy modernization: converting COBOL programs into Spring Boot microservices with AI-assisted analysis, business-rule validation, and AWS deployment. 50+ programs migrated at 98% functional accuracy.",
-    tech: ["Java", "Spring Boot", "COBOL", "AWS EKS", "Docker", "Helm", "Cursor Agents"],
-    status: "active",
-  },
-  {
-    name: "RAG documentation chat",
-    description:
-      "Grounded Q&A over documentation and code context using LangChain, embeddings, and PostgreSQL pgvector — built to support modernization workflows with accurate, citeable answers.",
-    tech: ["LangChain", "RAG", "PostgreSQL pgvector", "Python", "Embeddings"],
-    status: "active",
-  },
-  {
-    name: "This portfolio",
-    description:
-      "An explorable retro-corporate office built with React Three Fiber — the site you are looking at right now.",
-    tech: ["Next.js", "TypeScript", "React Three Fiber", "GSAP", "Tailwind CSS"],
-    link: "https://github.com/PrabeshThapa",
-    status: "active",
-  },
-  {
-    name: "ecab_passenger",
-    description: "Passenger-side application for an e-cab ride-hailing service, built in TypeScript.",
-    tech: ["TypeScript"],
-    link: "https://github.com/PrabeshThapa/ecab_passenger",
-    status: "shipped",
-  },
-];
-
 export const timeline: TimelineEvent[] = [
   {
     year: "2017–2018",
@@ -189,22 +169,13 @@ export const timeline: TimelineEvent[] = [
   },
 ];
 
-export const blogPosts: BlogPost[] = [
-  {
-    title: "Cutting COBOL analysis from 8 hours to 2 with Cursor agents",
-    date: "2025",
-    summary:
-      "How prompt engineering, context windowing, and chunked retrieval turned agentic workflows into a 75% faster path through legacy code — with first-pass acceptance up to 92%.",
-  },
-  {
-    title: "Why my portfolio is an office you walk into",
-    date: "2026",
-    summary:
-      "Notes on building a cinematic 3D portfolio with React Three Fiber without shipping a single downloaded asset.",
-  },
-];
-
 export const certifications: Certification[] = [
+  {
+    name: "Academy Accreditation — Generative AI Fundamentals",
+    issuer: "Databricks",
+    year: "Aug 2026",
+    credentialId: "190713791",
+  },
   {
     name: "Become a CompTIA Security+ Certified Security Professional",
     issuer: "CompTIA / LinkedIn Learning",

@@ -6,7 +6,6 @@ export type SectionId =
   | "projects"
   | "contact"
   | "timeline"
-  | "blog"
   | "certifications";
 
 export interface SectionMeta {
@@ -59,17 +58,11 @@ export interface TimelineEvent {
   detail: string;
 }
 
-export interface BlogPost {
-  title: string;
-  date: string;
-  summary: string;
-  link?: string;
-}
-
 export interface Certification {
   name: string;
   issuer: string;
   year: string;
+  credentialId?: string;
   link?: string;
 }
 

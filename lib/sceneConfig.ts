@@ -40,7 +40,6 @@ export const SECTION_POSES: Record<SectionId, CameraPose> = {
   projects: { position: [0.78, 1.3, -0.7], target: [0.8, 0.82, -1.38] },
   contact: { position: [-0.62, 1.35, -0.55], target: [-0.62, 0.8, -1.32] },
   timeline: { position: [0.7, 1.3, -0.75], target: [0.72, 1.28, -1.85] },
-  blog: { position: [-2.4, 1.65, -2.1], target: [-2.4, 1.75, -4.0] },
   certifications: { position: [-0.35, 1.25, -0.45], target: [-0.38, 0.75, -0.98] },
 };
 
