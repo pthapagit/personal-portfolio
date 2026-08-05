@@ -43,7 +43,6 @@ export const profile: Profile = {
     github: "https://github.com/PrabeshThapa",
     linkedin: "https://www.linkedin.com/in/prabeshthapa97",
     email: "Pthapatwenty21@gmail.com",
-    phone: "+1 (682) 347-6526",
   },
 };
 
