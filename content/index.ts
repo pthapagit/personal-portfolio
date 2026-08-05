@@ -40,7 +40,7 @@ export const profile: Profile = {
     "Open to Full Stack Software Engineer / Backend Engineer roles in financial services, insurance, and healthcare.",
   ],
   links: {
-    github: "https://github.com/PrabeshThapa",
+    github: "https://github.com/pthapagit",
     linkedin: "https://www.linkedin.com/in/prabeshthapa97",
     email: "Pthapatwenty21@gmail.com",
   },
