@@ -11,22 +11,23 @@ export default function Hud({ onSwitchTo2D }: { onSwitchTo2D: () => void }) {
   const hovered = usePortfolioStore((s) => s.hoveredSection);
   const focusSection = usePortfolioStore((s) => s.focusSection);
   const closeSection = usePortfolioStore((s) => s.closeSection);
+  const activeSection = usePortfolioStore((s) => s.activeSection);
   const hasExplored = usePortfolioStore((s) => s.hasExplored);
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
   const hoveredMeta = hovered ? sections.find((s) => s.id === hovered) : null;
 
-  // Escape closes menu or panel.
+  // Escape closes menu or an open section panel.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== "Escape") return;
       if (menuOpen) setMenuOpen(false);
-      else closeSection();
+      else if (activeSection) closeSection();
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [menuOpen, closeSection]);
+  }, [menuOpen, closeSection, activeSection]);
 
   if (phase === "loading" || phase === "intro") return null;
 

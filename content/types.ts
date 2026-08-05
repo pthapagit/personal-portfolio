@@ -15,8 +15,6 @@ export interface SectionMeta {
   label: string;
   /** The desk object that opens this section in the 3D scene. */
   object: string;
-  /** Short one-line description used in menus and SEO. */
-  blurb: string;
 }
 
 export interface Profile {

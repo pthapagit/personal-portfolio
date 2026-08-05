@@ -105,7 +105,7 @@ export function getSectionContent(id: SectionId): ReactNode {
             <div key={p.name}>
               <p className="font-medium">
                 {p.link ? (
-                  <a href={p.link} target="_blank" rel="noreferrer" className="underline decoration-ink/30 underline-offset-2 hover:decoration-ink">
+                  <a href={p.link} target="_blank" rel="noopener noreferrer" className="underline decoration-ink/30 underline-offset-2 hover:decoration-ink">
                     {p.name}
                   </a>
                 ) : (
@@ -145,14 +145,14 @@ export function getSectionContent(id: SectionId): ReactNode {
             )}
             <li>
               GITHUB —{" "}
-              <a className="underline underline-offset-2" href={profile.links.github} target="_blank" rel="noreferrer">
+              <a className="underline underline-offset-2" href={profile.links.github} target="_blank" rel="noopener noreferrer">
                 {profile.links.github.replace("https://", "")}
               </a>
             </li>
             {profile.links.linkedin && (
               <li>
                 LINKEDIN —{" "}
-                <a className="underline underline-offset-2" href={profile.links.linkedin} target="_blank" rel="noreferrer">
+                <a className="underline underline-offset-2" href={profile.links.linkedin} target="_blank" rel="noopener noreferrer">
                   {profile.links.linkedin.replace("https://", "")}
                 </a>
               </li>
@@ -183,7 +183,7 @@ export function getSectionContent(id: SectionId): ReactNode {
               <p className="font-mono text-xs text-ink-soft">{b.date}</p>
               <p className="font-medium">
                 {b.link ? (
-                  <a href={b.link} target="_blank" rel="noreferrer" className="underline underline-offset-2">
+                  <a href={b.link} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2">
                     {b.title}
                   </a>
                 ) : (
@@ -206,7 +206,7 @@ export function getSectionContent(id: SectionId): ReactNode {
                 {c.issuer} · {c.year}
               </p>
               {c.link && (
-                <a href={c.link} target="_blank" rel="noreferrer" className="text-sm underline underline-offset-2">
+                <a href={c.link} target="_blank" rel="noopener noreferrer" className="text-sm underline underline-offset-2">
                   Verify
                 </a>
               )}

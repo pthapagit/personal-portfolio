@@ -10,7 +10,7 @@ import {
 } from "@/content";
 import { askAssistant } from "./assistant";
 
-export interface TerminalResult {
+interface TerminalResult {
   lines: string[];
   /** Special effects the UI should apply. */
   action?: "clear" | "exit";

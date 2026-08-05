@@ -6,7 +6,7 @@ import type { SectionId } from "@/content/types";
  * corridor extends toward +Z.
  */
 
-export type Vec3 = [number, number, number];
+type Vec3 = [number, number, number];
 
 export interface CameraPose {
   position: Vec3;

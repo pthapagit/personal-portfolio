@@ -5,21 +5,30 @@ import { motion } from "framer-motion";
 import { sections } from "@/content";
 import type { SectionId } from "@/content/types";
 import { usePortfolioStore } from "@/lib/store";
+import { useFocusTrap } from "@/lib/useFocusTrap";
 import { getSectionContent } from "./sectionContent";
 
 /** Manila-folder styled document panel for a focused section. */
 export default function SectionPanel({ section }: { section: SectionId }) {
   const closeSection = usePortfolioStore((s) => s.closeSection);
   const reducedMotion = usePortfolioStore((s) => s.reducedMotion);
+  const dialogRef = useRef<HTMLDivElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
   const meta = sections.find((s) => s.id === section)!;
 
+  useFocusTrap(dialogRef, closeRef);
+
   useEffect(() => {
-    closeRef.current?.focus();
-  }, [section]);
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") closeSection();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [closeSection]);
 
   return (
     <motion.div
+      ref={dialogRef}
       role="dialog"
       aria-modal="true"
       aria-label={meta.label}

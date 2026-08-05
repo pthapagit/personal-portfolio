@@ -21,7 +21,8 @@ class SceneErrorBoundary extends Component<{ onError: () => void; children: Reac
   static getDerivedStateFromError() {
     return { failed: true };
   }
-  componentDidCatch() {
+  componentDidCatch(error: Error) {
+    console.error("3D scene failed:", error);
     this.props.onError();
   }
   render() {
@@ -50,25 +51,31 @@ export default function Experience({ children }: { children: ReactNode }) {
   const activeSection = usePortfolioStore((s) => s.activeSection);
   const sceneReady = usePortfolioStore((s) => s.sceneReady);
   const startIntro = usePortfolioStore((s) => s.startIntro);
+  const closeSection = usePortfolioStore((s) => s.closeSection);
   const setReducedMotion = usePortfolioStore((s) => s.setReducedMotion);
 
   // Decide the initial mode on the client (deferred a tick so hydration
   // completes with the server-rendered 2D markup before any switch).
   useEffect(() => {
-    const t = setTimeout(() => {
-      const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      setReducedMotion(reduced);
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const applyReduced = () => setReducedMotion(mq.matches);
+    applyReduced();
+    mq.addEventListener("change", applyReduced);
 
+    const t = setTimeout(() => {
       const stored = localStorage.getItem(MODE_KEY);
       if (stored === "2d" || stored === "3d") {
         setMode(stored);
         return;
       }
       // Cheap checks only — the WebGL probe is deferred to the gate click.
-      const capable = window.innerWidth >= 768 && !reduced;
+      const capable = window.innerWidth >= 768 && !mq.matches;
       setMode(capable ? "3d" : "2d");
     }, 0);
-    return () => clearTimeout(t);
+    return () => {
+      clearTimeout(t);
+      mq.removeEventListener("change", applyReduced);
+    };
   }, [setReducedMotion]);
 
   // Kick off the intro once the canvas is live.
@@ -81,7 +88,19 @@ export default function Experience({ children }: { children: ReactNode }) {
 
   const choose = (m: Mode) => {
     localStorage.setItem(MODE_KEY, m);
+    if (m === "2d") {
+      closeSection();
+      setEntered(false);
+    }
     setMode(m);
+  };
+
+  const enter3D = () => {
+    if (!webglAvailable()) {
+      choose("2d");
+      return;
+    }
+    choose("3d");
   };
 
   const in3D = mode === "3d";
@@ -90,7 +109,7 @@ export default function Experience({ children }: { children: ReactNode }) {
     <>
       {/* Accessible escape hatch, first focusable element on the page */}
       <button
-        onClick={() => choose(in3D ? "2d" : "3d")}
+        onClick={() => (in3D ? choose("2d") : enter3D())}
         className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-sm focus:border focus:border-ink focus:bg-paper focus:px-3 focus:py-2 focus:font-mono focus:text-xs focus:uppercase focus:tracking-widest focus:text-ink"
       >
         {in3D ? "Switch to text version" : "Switch to 3D office"}
@@ -102,7 +121,7 @@ export default function Experience({ children }: { children: ReactNode }) {
         {mode === "2d" && (
           <div className="fixed bottom-5 right-5 z-20">
             <button
-              onClick={() => choose("3d")}
+              onClick={enter3D}
               className="rounded-sm border border-ink/30 bg-paper px-3 py-1.5 font-mono text-xs uppercase tracking-widest text-ink shadow-md hover:bg-ink hover:text-paper"
             >
               Enter the 3D office

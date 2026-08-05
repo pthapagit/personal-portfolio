@@ -102,11 +102,16 @@ export default function CameraRig() {
 
   // Focus moves + return to overview.
   useEffect(() => {
+    const posVec = pos.current;
+    const tgtVec = tgt.current;
     if (phase === "focus" && activeSection) {
       tweenTo(SECTION_POSES[activeSection], reducedMotion ? 0 : 1.3);
     } else if (phase === "explore") {
       tweenTo(OVERVIEW, reducedMotion ? 0 : 1.0);
     }
+    return () => {
+      gsap.killTweensOf([posVec, tgtVec]);
+    };
   }, [phase, activeSection, reducedMotion]);
 
   useFrame(({ clock }) => {

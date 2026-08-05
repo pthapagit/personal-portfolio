@@ -10,8 +10,6 @@ import type {
   TimelineEvent,
 } from "./types";
 
-export * from "./types";
-
 /**
  * All portfolio content lives in this folder.
  * Sourced from LinkedIn profile (Profile.pdf) and GitHub.
@@ -37,15 +35,15 @@ export const profile: Profile = {
 };
 
 export const sections: SectionMeta[] = [
-  { id: "about", label: "About Me", object: "Computer Monitor", blurb: "Who I am and what I do." },
-  { id: "skills", label: "Technical Skills", object: "Keyboard", blurb: "Languages, frameworks and tools." },
-  { id: "resume", label: "Resume", object: "Notebook", blurb: "Education and a printable summary." },
-  { id: "experience", label: "Work Experience", object: "Filing Cabinet", blurb: "Where I have worked and what I did." },
-  { id: "projects", label: "Current Projects", object: "Coffee Mug", blurb: "What I am building right now." },
-  { id: "contact", label: "Contact", object: "Desk Phone", blurb: "How to reach me." },
-  { id: "timeline", label: "Career Timeline", object: "Calendar", blurb: "The path so far, year by year." },
-  { id: "blog", label: "Blog", object: "Window", blurb: "Notes and writing." },
-  { id: "certifications", label: "Certifications", object: "Employee Badge", blurb: "Credentials on file." },
+  { id: "about", label: "About Me", object: "Computer Monitor" },
+  { id: "skills", label: "Technical Skills", object: "Keyboard" },
+  { id: "resume", label: "Resume", object: "Notebook" },
+  { id: "experience", label: "Work Experience", object: "Filing Cabinet" },
+  { id: "projects", label: "Current Projects", object: "Coffee Mug" },
+  { id: "contact", label: "Contact", object: "Desk Phone" },
+  { id: "timeline", label: "Career Timeline", object: "Calendar" },
+  { id: "blog", label: "Blog", object: "Window" },
+  { id: "certifications", label: "Certifications", object: "Employee Badge" },
 ];
 
 export const skills: SkillGroup[] = [
@@ -92,7 +90,7 @@ export const skills: SkillGroup[] = [
 
 export const experience: ExperienceItem[] = [
   {
-    company: "Tata Consultancy Services (Client: TSYS)",
+    company: "Tata Consultancy Services (Client: TSYS / Global Payments)",
     role: "Modernization Engineer",
     period: "January 2025 — Present",
     location: "Alpharetta, Georgia, United States",
@@ -120,10 +118,10 @@ export const experience: ExperienceItem[] = [
   {
     company: "Tata Consultancy Services",
     role: "Software Engineer",
-    period: "November 2021 — Present",
+    period: "November 2021 — January 2025",
     location: "United States",
     highlights: [
-      "Built full-stack web applications using JavaScript (React, Node.js, Express, MongoDB) with RESTful APIs, JWT-based authentication, and Python backend services.",
+      "Built full-stack web applications using JavaScript (React, Node.js, Express, MongoDB) with RESTful APIs, JWT-based authentication, and Python backend services (prior to the current TSYS modernization assignment).",
       "Engineered end-to-end CI/CD pipelines with Jenkins, Docker, and Maven for automated deployment to AWS EC2, reducing deployment time by 60%.",
       "Developed automated testing frameworks using Selenium and Postman, achieving 80% test coverage and eliminating 15+ hours/week of manual regression testing.",
       "Fine-tuned an image classification model using Python and Fast.ai, achieving 92% accuracy and documenting the process as a reusable training guide.",

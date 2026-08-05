@@ -8,7 +8,7 @@
  * changes — it only consumes this function's return shape.
  */
 
-export interface AssistantReply {
+interface AssistantReply {
   ok: boolean;
   lines: string[];
 }

@@ -6,7 +6,6 @@ import type { Group } from "three";
 import { C } from "./palette";
 import { CORRIDOR, ROOM } from "@/lib/sceneConfig";
 import Hotspot from "./Hotspot";
-import { usePortfolioStore } from "@/lib/store";
 
 const { width: RW, depth: RD, height: RH } = ROOM;
 const { width: CW, height: CH, zStart: CZ0, zEnd: CZ1 } = CORRIDOR;
@@ -232,7 +231,6 @@ function WallClock() {
 
 /** The window opens the Blog section. */
 function BlogWindow() {
-  const reducedMotion = usePortfolioStore((s) => s.reducedMotion);
   return (
     <Hotspot section="blog">
       {(hovered) => (
@@ -268,7 +266,6 @@ function BlogWindow() {
             <boxGeometry args={[0.045, 1.4, 0.02]} />
             <meshStandardMaterial color={C.trim} roughness={0.6} />
           </mesh>
-          {!reducedMotion && null}
         </group>
       )}
     </Hotspot>

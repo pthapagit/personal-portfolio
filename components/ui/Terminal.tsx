@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { BOOT_LINES, runCommand } from "@/lib/terminal";
 import { usePortfolioStore } from "@/lib/store";
+import { useFocusTrap } from "@/lib/useFocusTrap";
 
 /**
  * Green-phosphor CRT terminal shown when the monitor is focused.
@@ -20,8 +21,21 @@ export default function Terminal() {
   const [historyIdx, setHistoryIdx] = useState(-1);
   const [busy, setBusy] = useState(false);
 
+  const dialogRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const exitTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const mountedRef = useRef(true);
+
+  useFocusTrap(dialogRef, inputRef);
+
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+      if (exitTimerRef.current) clearTimeout(exitTimerRef.current);
+    };
+  }, []);
 
   // Line-by-line typewriter reveal of pending output.
   useEffect(() => {
@@ -59,16 +73,23 @@ export default function Terminal() {
     if (cmd.trim()) setHistory((h) => [cmd, ...h].slice(0, 30));
     setLines((l) => [...l, `PT> ${cmd}`]);
     setBusy(true);
-    const result = await runCommand(cmd);
-    setBusy(false);
-    if (result.action === "clear") {
-      setLines([]);
-      setPending([]);
-      return;
-    }
-    setPending((p) => [...p, ...result.lines, ""]);
-    if (result.action === "exit") {
-      setTimeout(closeSection, reducedMotion ? 100 : 700);
+    try {
+      const result = await runCommand(cmd);
+      if (!mountedRef.current) return;
+      if (result.action === "clear") {
+        setLines([]);
+        setPending([]);
+        return;
+      }
+      setPending((p) => [...p, ...result.lines, ""]);
+      if (result.action === "exit") {
+        exitTimerRef.current = setTimeout(closeSection, reducedMotion ? 100 : 700);
+      }
+    } catch {
+      if (!mountedRef.current) return;
+      setPending((p) => [...p, "COMMAND FAILED.", ""]);
+    } finally {
+      if (mountedRef.current) setBusy(false);
     }
   }, [busy, pending.length, input, closeSection, reducedMotion]);
 
@@ -96,6 +117,7 @@ export default function Terminal() {
 
   return (
     <motion.div
+      ref={dialogRef}
       role="dialog"
       aria-modal="true"
       aria-label="Personnel terminal"
@@ -114,7 +136,7 @@ export default function Terminal() {
           <span>PT-OS · Personnel Terminal</span>
           <button
             onClick={closeSection}
-            className="pointer-events-auto border border-terminal/40 px-2 py-0.5 tracking-widest text-terminal hover:bg-terminal hover:text-black focus:outline-2 focus:outline-terminal"
+            className="pointer-events-auto relative z-20 border border-terminal/40 px-2 py-0.5 tracking-widest text-terminal hover:bg-terminal hover:text-black focus:outline-2 focus:outline-terminal"
           >
             EXIT
           </button>
@@ -122,7 +144,7 @@ export default function Terminal() {
 
         <div
           ref={scrollRef}
-          className="flex-1 overflow-y-auto px-4 py-3 font-mono text-[13px] leading-relaxed text-terminal"
+          className="relative z-20 flex-1 overflow-y-auto px-4 py-3 font-mono text-[13px] leading-relaxed text-terminal"
           style={{ textShadow: "0 0 6px rgba(99,232,150,0.55)" }}
         >
           {lines.map((l, i) => (

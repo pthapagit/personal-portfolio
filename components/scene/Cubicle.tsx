@@ -87,7 +87,7 @@ function Partitions() {
 
 function PartitionPanel({ position, size }: { position: [number, number, number]; size: [number, number, number] }) {
   const [w, h, d] = size;
-  const capSize: [number, number, number] = w > d ? [w + 0.06, 0.05, d + 0.06] : [w + 0.06, 0.05, d + 0.06];
+  const capSize: [number, number, number] = [w + 0.06, 0.05, d + 0.06];
   return (
     <group position={position}>
       <mesh>

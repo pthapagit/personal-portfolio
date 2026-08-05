@@ -3,7 +3,7 @@
 import { create } from "zustand";
 import type { SectionId } from "@/content/types";
 
-export type ScenePhase = "loading" | "intro" | "explore" | "focus";
+type ScenePhase = "loading" | "intro" | "explore" | "focus";
 
 interface PortfolioState {
   phase: ScenePhase;
