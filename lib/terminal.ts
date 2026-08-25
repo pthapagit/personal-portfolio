@@ -91,8 +91,9 @@ function timelineLines(): string[] {
 
 function certLines(): string[] {
   return certifications.map((c) => {
+    const exp = c.expires ? ` · Exp ${c.expires}` : "";
     const id = c.credentialId ? ` · ID ${c.credentialId}` : "";
-    return `${c.year}  ${c.name} — ${c.issuer}${id}`;
+    return `${c.year}  ${c.name} — ${c.issuer}${exp}${id}`;
   });
 }
 

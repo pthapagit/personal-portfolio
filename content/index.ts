@@ -172,6 +172,13 @@ export const timeline: TimelineEvent[] = [
 
 export const certifications: Certification[] = [
   {
+    name: "AWS Certified AI Practitioner",
+    issuer: "Amazon Web Services",
+    year: "Aug 2026",
+    expires: "Aug 2029",
+    credentialId: "0a9652dfe4e54171809f3abece0f6e53",
+  },
+  {
     name: "Academy Accreditation — Generative AI Fundamentals",
     issuer: "Databricks",
     year: "Aug 2026",

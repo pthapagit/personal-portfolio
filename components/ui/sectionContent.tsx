@@ -197,6 +197,7 @@ export function getSectionContent(id: SectionId): ReactNode {
               <p className="font-medium">{c.name}</p>
               <p className="font-mono text-xs text-ink-soft">
                 {c.issuer} · {c.year}
+                {c.expires ? ` · Exp ${c.expires}` : ""}
                 {c.credentialId ? ` · ID ${c.credentialId}` : ""}
               </p>
               {c.link && (

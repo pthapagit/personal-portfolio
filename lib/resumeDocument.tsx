@@ -192,6 +192,7 @@ export function ResumeDocument() {
               <Text style={{ fontFamily: "Helvetica-Bold" }}>{c.name}</Text>
               {" — "}
               {c.issuer} · {c.year}
+              {c.expires ? ` · Exp ${c.expires}` : ""}
               {c.credentialId ? ` · ID ${c.credentialId}` : ""}
             </Text>
           ))}

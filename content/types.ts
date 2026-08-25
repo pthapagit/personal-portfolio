@@ -62,6 +62,7 @@ export interface Certification {
   name: string;
   issuer: string;
   year: string;
+  expires?: string;
   credentialId?: string;
   link?: string;
 }
