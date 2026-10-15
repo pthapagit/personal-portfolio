@@ -6,6 +6,7 @@ import { requireAdmin } from "@/lib/blog/auth";
 import { createSupabaseServerClient } from "@/lib/blog/supabase/server";
 import { postDraftSchema, parseTagsInput } from "@/lib/blog/schema";
 import { buildPostRecord } from "@/lib/blog/build-post";
+import { checkImageUpload } from "@/lib/blog/image-upload";
 import {
   createPost,
   updatePost,
@@ -99,19 +100,17 @@ export async function uploadImageAction(
   await requireAdmin();
 
   const file = formData.get("file");
-  if (!(file instanceof File) || file.size === 0) {
+  if (!(file instanceof File)) {
     return { error: "No file selected." };
   }
-  if (!file.type.startsWith("image/")) {
-    return { error: "Only image files are allowed." };
-  }
-  if (file.size > 10 * 1024 * 1024) {
-    return { error: "Image must be 10 MB or smaller." };
+  const check = checkImageUpload(file.type, file.size);
+  if (!check.ok) {
+    return { error: check.error };
   }
 
   const supabase = await createSupabaseServerClient();
-  const ext = (file.name.split(".").pop() || "bin").toLowerCase();
-  const path = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+  // Random server-chosen name + allow-listed extension (never the client's).
+  const path = `${Date.now()}-${Math.random().toString(36).slice(2)}.${check.ext}`;
 
   const { error } = await supabase.storage
     .from("blog-images")
