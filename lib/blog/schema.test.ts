@@ -19,6 +19,11 @@ describe("postDraftSchema", () => {
     expect(result.success).toBe(false);
   });
 
+  it("rejects an over-long title", () => {
+    const result = postDraftSchema.safeParse({ ...base, title: "a".repeat(201) });
+    expect(result.success).toBe(false);
+  });
+
   it("rejects an unknown status", () => {
     const result = postDraftSchema.safeParse({ ...base, status: "archived" });
     expect(result.success).toBe(false);

@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { createSupabaseServerClient } from "@/lib/blog/supabase/server";
+import { createSupabasePublicClient } from "@/lib/blog/supabase/public";
 import { listPublishedPosts } from "@/lib/blog/posts";
 import { PostCard } from "@/components/blog/PostCard";
 
-export const dynamic = "force-dynamic";
+// Public, cacheable reads (anon client, no cookies). Refresh every 5 min.
+export const revalidate = 300;
 
 export const metadata: Metadata = {
   title: "Blog",
@@ -17,7 +18,7 @@ export default async function BlogIndexPage({
   searchParams: Promise<{ tag?: string }>;
 }) {
   const { tag } = await searchParams;
-  const supabase = await createSupabaseServerClient();
+  const supabase = createSupabasePublicClient();
   const all = await listPublishedPosts(supabase);
   const tags = Array.from(new Set(all.flatMap((p) => p.tags))).sort();
   const posts = tag ? all.filter((p) => p.tags.includes(tag)) : all;

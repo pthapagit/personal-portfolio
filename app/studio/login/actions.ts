@@ -16,9 +16,11 @@ export async function login(
   if (!email || !password) {
     return { error: "Enter your email and password." };
   }
-  // Only the configured admin may sign in to the studio.
+  // Only the configured admin may sign in. Use the same generic message as a
+  // failed sign-in below so the response doesn't reveal which email is the
+  // admin (no account enumeration).
   if (!isAdminEmail(email)) {
-    return { error: "This account is not allowed." };
+    return { error: "Invalid email or password." };
   }
 
   const supabase = await createSupabaseServerClient();

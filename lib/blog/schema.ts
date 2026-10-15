@@ -15,18 +15,30 @@ export function parseTagsInput(input: string): string[] {
   return out;
 }
 
+// Upper bounds to keep stored records sane (the editor is admin-only, so these
+// are robustness guards rather than a security boundary).
+export const MAX_TITLE_LENGTH = 200;
+export const MAX_SLUG_LENGTH = 200;
+export const MAX_EXCERPT_LENGTH = 500;
+export const MAX_CONTENT_LENGTH = 100_000;
+export const MAX_TAG_LENGTH = 50;
+
 /** Validation schema for the post editor payload. */
 export const postDraftSchema = z
   .object({
-    title: z.string().trim().min(1, "Title is required"),
-    slug: z.string().trim().optional(),
-    excerpt: z.string().trim().optional(),
-    content_md: z.string().default(""),
+    title: z
+      .string()
+      .trim()
+      .min(1, "Title is required")
+      .max(MAX_TITLE_LENGTH, `Title must be at most ${MAX_TITLE_LENGTH} characters`),
+    slug: z.string().trim().max(MAX_SLUG_LENGTH).optional(),
+    excerpt: z.string().trim().max(MAX_EXCERPT_LENGTH).optional(),
+    content_md: z.string().max(MAX_CONTENT_LENGTH).default(""),
     cover_image_url: z
       .union([z.string(), z.null()])
       .optional()
       .transform((v) => (v && v.trim() !== "" ? v.trim() : null)),
-    tags: z.array(z.string()).default([]),
+    tags: z.array(z.string().max(MAX_TAG_LENGTH)).default([]),
     status: z.enum(["draft", "published"]).default("draft"),
     font: z.enum(POST_FONTS).default("sans"),
   })
