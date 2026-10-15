@@ -44,6 +44,12 @@ export default async function StudioAuthedLayout({
             <span className="hidden font-mono text-xs text-ink-soft sm:inline">
               {user.email}
             </span>
+            <Link
+              href="/studio/password"
+              className="font-mono text-xs uppercase tracking-[0.2em] text-ink-soft hover:text-ink"
+            >
+              Password
+            </Link>
             <form action={logoutAction}>
               <button
                 type="submit"

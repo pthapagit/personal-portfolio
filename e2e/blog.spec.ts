@@ -80,4 +80,22 @@ test.describe("blog end-to-end", () => {
     await expect(page).toHaveURL(/\/studio\/?$/);
     await expect(page.getByText(title)).toHaveCount(0);
   });
+
+  test("refuses a password change when the current password is wrong", async ({ page }) => {
+    await page.goto("/studio/login");
+    await page.getByLabel(/email/i).fill(email!);
+    await page.getByLabel(/password/i).fill(password!);
+    await page.getByRole("button", { name: /sign in/i }).click();
+    await expect(page).toHaveURL(/\/studio\/?$/);
+
+    await page.getByRole("link", { name: /^password$/i }).click();
+    await expect(page).toHaveURL(/\/studio\/password/);
+    await page.getByLabel(/current password/i).fill("definitely-not-the-password");
+    await page.getByLabel(/^new password/i).fill("an-unused-new-passphrase");
+    await page.getByLabel(/confirm new password/i).fill("an-unused-new-passphrase");
+    await page.getByRole("button", { name: /change password/i }).click();
+    await expect(
+      page.getByRole("alert").filter({ hasText: /current password is incorrect/i }),
+    ).toBeVisible();
+  });
 });

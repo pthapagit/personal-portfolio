@@ -7,6 +7,7 @@ import { createSupabaseServerClient } from "@/lib/blog/supabase/server";
 import { postDraftSchema, parseTagsInput } from "@/lib/blog/schema";
 import { buildPostRecord } from "@/lib/blog/build-post";
 import { checkImageUpload } from "@/lib/blog/image-upload";
+import { validatePasswordChange } from "@/lib/blog/password";
 import {
   createPost,
   updatePost,
@@ -14,7 +15,7 @@ import {
   getPostById,
   listTakenSlugs,
 } from "@/lib/blog/posts";
-import type { SaveState, UploadResult } from "./types";
+import type { PasswordState, SaveState, UploadResult } from "./types";
 
 function revalidateBlog(slug?: string) {
   revalidatePath("/studio");
@@ -119,6 +120,34 @@ export async function uploadImageAction(
 
   const { data } = supabase.storage.from("blog-images").getPublicUrl(path);
   return { url: data.publicUrl };
+}
+
+export async function changePasswordAction(
+  _prev: PasswordState,
+  formData: FormData,
+): Promise<PasswordState> {
+  const user = await requireAdmin();
+  const current = String(formData.get("current") ?? "");
+  const next = String(formData.get("next") ?? "");
+  const confirm = String(formData.get("confirm") ?? "");
+
+  const invalid = validatePasswordChange({ current, next, confirm });
+  if (invalid) return { error: invalid };
+
+  const supabase = await createSupabaseServerClient();
+
+  // Re-verify the current password so a hijacked session alone can't take over the account.
+  const { error: verifyError } = await supabase.auth.signInWithPassword({
+    email: user.email ?? "",
+    password: current,
+  });
+  if (verifyError) return { error: "Current password is incorrect." };
+
+  const { error: updateError } = await supabase.auth.updateUser({ password: next });
+  if (updateError) return { error: updateError.message };
+
+  await supabase.auth.signOut({ scope: "others" });
+  return { success: true };
 }
 
 export async function logoutAction(): Promise<void> {
