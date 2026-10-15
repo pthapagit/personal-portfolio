@@ -56,6 +56,7 @@ describe("PostEditor", () => {
           published_at: null,
           created_at: "",
           updated_at: "",
+          font: "serif",
         }}
       />,
     );
@@ -65,5 +66,66 @@ describe("PostEditor", () => {
     expect((screen.getByLabelText(/tags/i) as HTMLInputElement).value).toContain(
       "travel",
     );
+    expect((screen.getByLabelText(/^font/i) as HTMLSelectElement).value).toBe(
+      "serif",
+    );
+  });
+
+  it("explains the slug by showing the post's web address", async () => {
+    const user = userEvent.setup();
+    render(<PostEditor saveAction={noopSave} uploadAction={noopUpload} />);
+    await user.type(screen.getByLabelText(/title/i), "Kyoto Diary");
+    expect(screen.getByText("/blog/kyoto-diary")).toBeInTheDocument();
+  });
+
+  it("bolds the selected text from the toolbar", async () => {
+    const user = userEvent.setup();
+    render(<PostEditor saveAction={noopSave} uploadAction={noopUpload} />);
+    const body = screen.getByLabelText(/post body/i) as HTMLTextAreaElement;
+    await user.type(body, "make me bold");
+    body.setSelectionRange(8, 12);
+    await user.click(screen.getByRole("button", { name: /^bold$/i }));
+    expect(body.value).toBe("make me **bold**");
+  });
+
+  it("adds a heading from the toolbar", async () => {
+    const user = userEvent.setup();
+    render(<PostEditor saveAction={noopSave} uploadAction={noopUpload} />);
+    const body = screen.getByLabelText(/post body/i) as HTMLTextAreaElement;
+    await user.type(body, "Chapter one");
+    await user.click(screen.getByRole("button", { name: /^heading$/i }));
+    expect(body.value).toBe("## Chapter one");
+  });
+
+  it("inserts an emoji at the cursor", async () => {
+    const user = userEvent.setup();
+    render(<PostEditor saveAction={noopSave} uploadAction={noopUpload} />);
+    const body = screen.getByLabelText(/post body/i) as HTMLTextAreaElement;
+    await user.type(body, "Hello ");
+    await user.click(screen.getByRole("button", { name: /insert emoji/i }));
+    await user.click(screen.getByRole("button", { name: "😀" }));
+    expect(body.value).toBe("Hello 😀");
+  });
+
+  it("opens a full-page preview showing the post as readers will see it", async () => {
+    const user = userEvent.setup();
+    render(<PostEditor saveAction={noopSave} uploadAction={noopUpload} />);
+    await user.type(screen.getByLabelText(/title/i), "Kyoto Diary");
+    await user.type(screen.getByLabelText(/post body/i), "Temples and tea.");
+    await user.selectOptions(screen.getByLabelText(/^font/i), "serif");
+
+    await user.click(screen.getByRole("button", { name: /full preview/i }));
+    const dialog = screen.getByRole("dialog", { name: /preview/i });
+    expect(dialog).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { level: 1, name: "Kyoto Diary" }),
+    ).toBeInTheDocument();
+    expect(screen.getByRole("article")).toHaveClass("font-serif");
+    expect(
+      screen.getAllByRole("button", { name: /^publish$/i }).length,
+    ).toBeGreaterThan(1);
+
+    await user.click(screen.getByRole("button", { name: /back to editing/i }));
+    expect(screen.queryByRole("dialog", { name: /preview/i })).toBeNull();
   });
 });

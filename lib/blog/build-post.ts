@@ -11,6 +11,7 @@ export interface BuiltPost {
   cover_image_url: string | null;
   tags: string[];
   status: "draft" | "published";
+  font: string;
   reading_minutes: number;
   published_at: string | null;
 }
@@ -70,6 +71,7 @@ export function buildPostRecord(opts: {
     cover_image_url: draft.cover_image_url ?? null,
     tags: draft.tags,
     status: draft.status,
+    font: draft.font,
     reading_minutes: readingMinutes(draft.content_md),
     published_at,
   };

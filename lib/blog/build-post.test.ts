@@ -10,6 +10,7 @@ const draft = (over: Partial<PostDraftParsed> = {}): PostDraftParsed => ({
   cover_image_url: null,
   tags: ["travel"],
   status: "draft",
+  font: "sans",
   ...over,
 });
 
@@ -69,6 +70,11 @@ describe("buildPostRecord", () => {
     const record = buildPostRecord({ draft: draft(), now: NOW });
     expect(record.reading_minutes).toBeGreaterThanOrEqual(1);
     expect(record.excerpt).toBe("I went to Paris and it was wonderful.");
+  });
+
+  it("carries the chosen font through to the record", () => {
+    const record = buildPostRecord({ draft: draft({ font: "serif" }), now: NOW });
+    expect(record.font).toBe("serif");
   });
 
   it("prefers an explicit excerpt over the auto one", () => {

@@ -37,6 +37,7 @@ export async function savePostAction(
     cover_image_url: formData.get("cover_image_url") ?? null,
     tags: parseTagsInput(String(formData.get("tags") ?? "")),
     status: formData.get("status") ?? "draft",
+    font: formData.get("font") || undefined,
   });
 
   if (!parsed.success) {

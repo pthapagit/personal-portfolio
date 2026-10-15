@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { POST_FONTS } from "./fonts";
 
 /** Normalize a comma-separated tag string into clean, de-duped, lowercase tags. */
 export function parseTagsInput(input: string): string[] {
@@ -27,6 +28,7 @@ export const postDraftSchema = z
       .transform((v) => (v && v.trim() !== "" ? v.trim() : null)),
     tags: z.array(z.string()).default([]),
     status: z.enum(["draft", "published"]).default("draft"),
+    font: z.enum(POST_FONTS).default("sans"),
   })
   .refine(
     (data) => data.status !== "published" || data.content_md.trim().length > 0,

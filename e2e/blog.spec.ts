@@ -47,8 +47,15 @@ test.describe("blog end-to-end", () => {
       timeout: 15_000,
     });
 
-    // 4. Publish
-    await page.getByRole("button", { name: /^publish$/i }).click();
+    // 4. Format with the toolbar, then publish from the full preview
+    await page.getByLabel(/post body/i).press("End");
+    await page.getByRole("button", { name: /insert emoji/i }).click();
+    await page.getByRole("button", { name: "✈️" }).click();
+    await page.getByRole("button", { name: /full preview/i }).click();
+    const preview = page.getByRole("dialog", { name: /full preview/i });
+    await expect(preview.getByRole("heading", { level: 1, name: title })).toBeVisible();
+    await expect(preview.getByText("✈️")).toBeVisible();
+    await preview.getByRole("button", { name: /^publish$/i }).click();
     await expect(page).toHaveURL(/\/studio\/?$/);
     await expect(page.getByText(title)).toBeVisible();
 

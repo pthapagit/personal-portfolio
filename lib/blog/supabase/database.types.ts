@@ -20,6 +20,7 @@ export type Database = {
           cover_image_url: string | null
           created_at: string
           excerpt: string | null
+          font: string
           id: string
           published_at: string | null
           reading_minutes: number
@@ -34,6 +35,7 @@ export type Database = {
           cover_image_url?: string | null
           created_at?: string
           excerpt?: string | null
+          font?: string
           id?: string
           published_at?: string | null
           reading_minutes?: number
@@ -48,6 +50,7 @@ export type Database = {
           cover_image_url?: string | null
           created_at?: string
           excerpt?: string | null
+          font?: string
           id?: string
           published_at?: string | null
           reading_minutes?: number

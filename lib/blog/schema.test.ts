@@ -41,6 +41,17 @@ describe("postDraftSchema", () => {
     if (result.success) expect(result.data.tags).toEqual([]);
   });
 
+  it("defaults the font to sans and accepts known fonts", () => {
+    const def = postDraftSchema.safeParse(base);
+    expect(def.success && def.data.font).toBe("sans");
+    const serif = postDraftSchema.safeParse({ ...base, font: "serif" });
+    expect(serif.success && serif.data.font).toBe("serif");
+  });
+
+  it("rejects an unknown font", () => {
+    expect(postDraftSchema.safeParse({ ...base, font: "comic" }).success).toBe(false);
+  });
+
   it("treats empty-string cover image as null", () => {
     const result = postDraftSchema.safeParse({ ...base, cover_image_url: "" });
     expect(result.success).toBe(true);

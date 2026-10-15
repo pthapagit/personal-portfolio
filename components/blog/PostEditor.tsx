@@ -1,8 +1,14 @@
 "use client";
 
-import { useActionState, useId, useRef, useState } from "react";
+import { useActionState, useEffect, useId, useRef, useState } from "react";
 import { slugify } from "@/lib/blog/slug";
+import { readingMinutes } from "@/lib/blog/reading-time";
+import { applyFormat, insertAt, type EditResult, type FormatAction } from "@/lib/blog/editor-format";
+import { POST_FONTS, FONT_LABELS, fontClass } from "@/lib/blog/fonts";
+import { parseTagsInput } from "@/lib/blog/schema";
 import { MarkdownView } from "@/components/blog/MarkdownView";
+import { EditorToolbar } from "@/components/blog/EditorToolbar";
+import { PostArticle } from "@/components/blog/PostArticle";
 import type { Post } from "@/lib/blog/types";
 import type { SaveState, UploadResult } from "@/app/studio/types";
 
@@ -28,16 +34,57 @@ export function PostEditor({
   const [tags, setTags] = useState((post?.tags ?? []).join(", "));
   const [content, setContent] = useState(post?.content_md ?? "");
   const [coverUrl, setCoverUrl] = useState(post?.cover_image_url ?? "");
+  const [font, setFont] = useState(post?.font ?? "sans");
   const [tab, setTab] = useState<"write" | "preview">("write");
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
+  const [previewAt, setPreviewAt] = useState<string | null>(null);
 
   const ids = useId();
   const bodyRef = useRef<HTMLTextAreaElement>(null);
+  const previewOpen = previewAt !== null;
+
+  useEffect(() => {
+    if (!previewOpen) return;
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") setPreviewAt(null);
+    }
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [previewOpen]);
 
   function onTitleChange(value: string) {
     setTitle(value);
     if (!slugTouched) setSlug(slugify(value));
+  }
+
+  function applyEdit(result: EditResult) {
+    setContent(result.text);
+    requestAnimationFrame(() => {
+      const el = bodyRef.current;
+      if (!el) return;
+      el.focus();
+      el.setSelectionRange(result.selectionStart, result.selectionEnd);
+    });
+  }
+
+  function format(action: FormatAction) {
+    const el = bodyRef.current;
+    const start = el?.selectionStart ?? content.length;
+    const end = el?.selectionEnd ?? content.length;
+    applyEdit(applyFormat(content, start, end, action));
+  }
+
+  function insert(text: string) {
+    const el = bodyRef.current;
+    const start = el?.selectionStart ?? content.length;
+    const end = el?.selectionEnd ?? content.length;
+    applyEdit(insertAt(content, start, end, text));
   }
 
   async function upload(file: File): Promise<string | null> {
@@ -67,6 +114,29 @@ export function PostEditor({
   }
 
   const fieldErrors = state.fieldErrors ?? {};
+
+  const saveButtons = (
+    <>
+      <button
+        type="submit"
+        name="status"
+        value="draft"
+        disabled={pending || uploading}
+        className="rounded-md border border-office-green px-4 py-2 font-mono text-sm uppercase tracking-[0.2em] text-office-green disabled:opacity-60"
+      >
+        {pending ? "Saving\u2026" : "Save draft"}
+      </button>
+      <button
+        type="submit"
+        name="status"
+        value="published"
+        disabled={pending || uploading}
+        className="rounded-md bg-office-green px-4 py-2 font-mono text-sm uppercase tracking-[0.2em] text-paper disabled:opacity-60"
+      >
+        {pending ? "Saving\u2026" : "Publish"}
+      </button>
+    </>
+  );
 
   return (
     <div className="mx-auto max-w-5xl">
@@ -98,21 +168,30 @@ export function PostEditor({
         </label>
 
         <div className="grid gap-4 sm:grid-cols-2">
-          <label className="flex flex-col gap-1" htmlFor={`${ids}-slug`}>
-            <span className="font-mono text-xs uppercase tracking-[0.2em] text-ink-soft">
-              Slug
-            </span>
+          <div className="flex flex-col gap-1">
+            <label
+              htmlFor={`${ids}-slug`}
+              className="font-mono text-xs uppercase tracking-[0.2em] text-ink-soft"
+            >
+              Slug (web address)
+            </label>
             <input
               id={`${ids}-slug`}
               name="slug"
               value={slug}
+              aria-describedby={`${ids}-slug-help`}
               onChange={(e) => {
                 setSlug(e.target.value);
                 setSlugTouched(true);
               }}
               className="rounded-md border border-ink/20 bg-paper px-3 py-2 font-mono text-sm text-ink outline-none focus:border-office-green"
             />
-          </label>
+            <span id={`${ids}-slug-help`} className="text-xs text-ink-soft">
+              The link people will open:{" "}
+              <code className="break-all text-ink">/blog/{(slug || title).trim() ? slugify(slug || title) : "your-title"}</code>
+              . Filled in from the title automatically; edit it to customize.
+            </span>
+          </div>
 
           <label className="flex flex-col gap-1" htmlFor={`${ids}-tags`}>
             <span className="font-mono text-xs uppercase tracking-[0.2em] text-ink-soft">
@@ -141,6 +220,25 @@ export function PostEditor({
             rows={2}
             className="rounded-md border border-ink/20 bg-paper px-3 py-2 text-sm text-ink outline-none focus:border-office-green"
           />
+        </label>
+
+        <label className="flex flex-col gap-1 sm:max-w-xs" htmlFor={`${ids}-font`}>
+          <span className="font-mono text-xs uppercase tracking-[0.2em] text-ink-soft">
+            Font
+          </span>
+          <select
+            id={`${ids}-font`}
+            name="font"
+            value={font}
+            onChange={(e) => setFont(e.target.value)}
+            className="rounded-md border border-ink/20 bg-paper px-3 py-2 text-sm text-ink outline-none focus:border-office-green"
+          >
+            {POST_FONTS.map((f) => (
+              <option key={f} value={f}>
+                {FONT_LABELS[f]}
+              </option>
+            ))}
+          </select>
         </label>
 
         {/* Cover image */}
@@ -209,6 +307,7 @@ export function PostEditor({
               <label className="sr-only" htmlFor={`${ids}-body`}>
                 Post body markdown
               </label>
+              <EditorToolbar onFormat={format} onInsert={insert} />
               <textarea
                 id={`${ids}-body`}
                 name="content_md"
@@ -216,7 +315,7 @@ export function PostEditor({
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
                 rows={18}
-                className="h-full min-h-[18rem] w-full rounded-md border border-ink/20 bg-paper px-3 py-2 font-mono text-sm text-ink outline-none focus:border-office-green"
+                className="min-h-[18rem] w-full rounded-b-md border border-ink/20 bg-paper px-3 py-2 font-mono text-sm text-ink outline-none focus:border-office-green"
                 placeholder="Write your post in Markdown..."
               />
               <div className="mt-2 flex items-center gap-3">
@@ -237,7 +336,7 @@ export function PostEditor({
             </div>
 
             <div
-              className={`prose prose-sm max-w-none rounded-md border border-ink/10 bg-paper-dark/40 p-4 ${
+              className={`prose prose-sm max-w-none rounded-md border border-ink/10 bg-paper-dark/40 p-4 ${fontClass(font)} ${
                 tab === "preview" ? "" : "hidden sm:block"
               }`}
               aria-label="Preview"
@@ -256,24 +355,63 @@ export function PostEditor({
 
         <div className="flex flex-wrap items-center gap-3 border-t border-ink/10 pt-4">
           <button
-            type="submit"
-            name="status"
-            value="draft"
-            disabled={pending || uploading}
-            className="rounded-md border border-office-green px-4 py-2 font-mono text-sm uppercase tracking-[0.2em] text-office-green disabled:opacity-60"
+            type="button"
+            onClick={() => setPreviewAt(post?.published_at ?? new Date().toISOString())}
+            className="rounded-md border border-ink/30 px-4 py-2 font-mono text-sm uppercase tracking-[0.2em] text-ink hover:bg-ink/5"
           >
-            {pending ? "Saving\u2026" : "Save draft"}
+            Full preview
           </button>
-          <button
-            type="submit"
-            name="status"
-            value="published"
-            disabled={pending || uploading}
-            className="rounded-md bg-office-green px-4 py-2 font-mono text-sm uppercase tracking-[0.2em] text-paper disabled:opacity-60"
-          >
-            {pending ? "Saving\u2026" : "Publish"}
-          </button>
+          {saveButtons}
         </div>
+
+        {previewOpen ? (
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-label="Full preview"
+            className="fixed inset-0 z-50 flex flex-col bg-paper"
+          >
+            <div className="sticky top-0 z-10 border-b border-ink/10 bg-paper/95 backdrop-blur">
+              <div className="mx-auto flex max-w-2xl flex-wrap items-center justify-between gap-2 px-4 py-3">
+                <div>
+                  <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-office-green">
+                    Preview
+                  </p>
+                  <p className="text-xs text-ink-soft">This is exactly how readers will see it.</p>
+                </div>
+                <div className="flex flex-wrap items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setPreviewAt(null)}
+                    className="rounded-md px-3 py-2 font-mono text-xs uppercase tracking-[0.2em] text-ink-soft hover:text-ink"
+                  >
+                    Back to editing
+                  </button>
+                  {saveButtons}
+                </div>
+              </div>
+              {state.error ? (
+                <p role="alert" className="mx-auto max-w-2xl px-4 pb-2 text-sm text-red-700">
+                  {state.error}
+                </p>
+              ) : null}
+            </div>
+            <div className="flex-1 overflow-y-auto">
+              <div className="mx-auto max-w-2xl px-4 pb-16 pt-4">
+                <PostArticle
+                  title={title.trim() || "Untitled post"}
+                  publishedAt={previewAt}
+                  readingMinutes={readingMinutes(content)}
+                  coverImageUrl={coverUrl || null}
+                  contentMd={content}
+                  tags={parseTagsInput(tags)}
+                  font={font}
+                  linkTags={false}
+                />
+              </div>
+            </div>
+          </div>
+        ) : null}
       </form>
 
       {post && deleteAction ? (
