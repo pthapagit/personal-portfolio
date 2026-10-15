@@ -20,6 +20,10 @@ content/ ──► 2D directory
 There is **no** hand-edited PDF in `public/`. Changing `content/` and redeploying
 updates every surface, including the download.
 
+> **Blog is separate.** Posts are *not* stored here. They live in Supabase and
+> are written from the `/studio` UI (see the Blog section in the root
+> [`README.md`](../README.md)). You never edit code to publish a post.
+
 ## Order
 
 Keep **timeline**, **experience**, and **certifications** newest-first (top = latest).

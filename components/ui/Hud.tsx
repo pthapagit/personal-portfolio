@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import { profile, sections } from "@/content";
 import { usePortfolioStore } from "@/lib/store";
@@ -115,6 +116,12 @@ export default function Hud({ onSwitchTo2D }: { onSwitchTo2D: () => void }) {
           >
             Directory
           </button>
+          <Link
+            href="/blog"
+            className="rounded-sm border border-ink/30 bg-paper/95 px-3 py-1.5 font-mono text-xs uppercase tracking-widest text-ink shadow-md hover:bg-ink hover:text-paper focus:outline-2 focus:outline-office-green"
+          >
+            Blog
+          </Link>
           <button
             onClick={onSwitchTo2D}
             className="rounded-sm border border-ink/30 bg-paper/95 px-3 py-1.5 font-mono text-xs uppercase tracking-widest text-ink shadow-md hover:bg-ink hover:text-paper focus:outline-2 focus:outline-office-green"

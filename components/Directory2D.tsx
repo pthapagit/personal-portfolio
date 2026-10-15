@@ -1,5 +1,8 @@
+import { Suspense } from "react";
+import Link from "next/link";
 import { profile, sections } from "@/content";
 import { getSectionContent } from "@/components/ui/sectionContent";
+import { RecentPosts } from "@/components/blog/RecentPosts";
 
 /**
  * The 2D "office floor directory" — server-rendered. This is the mobile /
@@ -29,6 +32,14 @@ export default function Directory2D() {
               </a>
             </li>
           ))}
+          <li>
+            <Link
+              href="/blog"
+              className="inline-block px-1.5 py-2 font-mono text-[11px] uppercase tracking-[0.2em] text-office-green underline-offset-4 hover:underline"
+            >
+              Blog
+            </Link>
+          </li>
         </ul>
       </nav>
 
@@ -42,6 +53,29 @@ export default function Directory2D() {
             <div className="leading-relaxed">{getSectionContent(s.id)}</div>
           </section>
         ))}
+
+        <section
+          id="blog"
+          aria-labelledby="blog-heading"
+          className="scroll-mt-16 border-b border-ink/10 py-10 last:border-0"
+        >
+          <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-ink-soft">
+            In the office: Bookshelf
+          </p>
+          <h2
+            id="blog-heading"
+            className="mb-4 mt-1 text-xl font-semibold uppercase tracking-[0.15em]"
+          >
+            Blog
+          </h2>
+          <div className="leading-relaxed">
+            <Suspense
+              fallback={<p className="text-ink-soft">Loading latest posts&hellip;</p>}
+            >
+              <RecentPosts limit={3} heading="" />
+            </Suspense>
+          </div>
+        </section>
       </main>
 
       <footer className="border-t border-ink/15 bg-paper-dark py-6 text-center font-mono text-[10px] uppercase tracking-[0.3em] text-ink-soft">
