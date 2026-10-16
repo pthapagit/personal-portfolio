@@ -5,6 +5,7 @@ import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import { profile, sections } from "@/content";
 import { usePortfolioStore } from "@/lib/store";
+import ThemeToggle from "@/components/ui/ThemeToggle";
 
 /** Persistent overlay chrome for the 3D mode: badge, hover label, directory. */
 export default function Hud({ onSwitchTo2D }: { onSwitchTo2D: () => void }) {
@@ -67,9 +68,9 @@ export default function Hud({ onSwitchTo2D }: { onSwitchTo2D: () => void }) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ delay: 1.2, duration: 0.6 }}
-            className="absolute bottom-16 left-1/2 -translate-x-1/2 font-mono text-xs uppercase tracking-[0.3em] text-ink/70"
+            className="absolute bottom-16 left-1/2 -translate-x-1/2 font-mono text-sm tracking-wide text-ink/70"
           >
-            Click the objects on the desk to explore
+            Click the objects on the desk to explore.
           </motion.p>
         )}
       </AnimatePresence>
@@ -128,6 +129,7 @@ export default function Hud({ onSwitchTo2D }: { onSwitchTo2D: () => void }) {
           >
             2D view
           </button>
+          <ThemeToggle className="rounded-sm border border-ink/30 bg-paper/95 px-3 py-1.5 font-mono text-xs uppercase tracking-widest text-ink shadow-md hover:bg-ink hover:text-paper focus:outline-2 focus:outline-office-green" />
         </div>
       </div>
     </div>

@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { profile } from "@/content";
+import ThemeToggle from "@/components/ui/ThemeToggle";
 
 export default function BlogLayout({ children }: { children: ReactNode }) {
   return (
@@ -13,12 +14,15 @@ export default function BlogLayout({ children }: { children: ReactNode }) {
           >
             {profile.name.split(" ")[0]}&rsquo;s Blog
           </Link>
-          <Link
-            href="/"
-            className="font-mono text-[11px] uppercase tracking-[0.2em] text-ink-soft underline-offset-4 hover:text-ink hover:underline"
-          >
-            Portfolio
-          </Link>
+          <div className="flex items-center gap-4">
+            <ThemeToggle className="font-mono text-[11px] uppercase tracking-[0.2em] text-ink-soft underline-offset-4 hover:text-ink hover:underline" />
+            <Link
+              href="/"
+              className="font-mono text-[11px] uppercase tracking-[0.2em] text-ink-soft underline-offset-4 hover:text-ink hover:underline"
+            >
+              Portfolio
+            </Link>
+          </div>
         </div>
       </header>
 

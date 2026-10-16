@@ -1,6 +1,10 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
+/* `dark:` utilities activate from a single [data-theme="dark"] signal on <html>
+   (set by the inline script in app/layout.tsx, which resolves the OS pref). */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
 @theme {
   /* Retro-corporate palette */
   --color-paper: #f1ead8;
@@ -15,6 +19,23 @@
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --font-serif: var(--font-source-serif);
+}
+
+/* --- Night-shift (dark) theme -------------------------------------------- */
+/* Same retro-office palette, lights down. office-green is lifted so it still
+   reads as an accent on dark AND carries dark `paper` text on green buttons. */
+:root {
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --color-paper: #1b1a16;
+  --color-paper-dark: #262520;
+  --color-ink: #ece4d2;
+  --color-ink-soft: #9b9684;
+  --color-office-green: #83b78d;
+  /* --color-terminal keeps its bright phosphor green */
 }
 
 html {

@@ -20,7 +20,7 @@ export default function EntryGate({ onEnter, onSwitchTo2D }: { onEnter: () => vo
         <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-ink-soft">{profile.title}</p>
       </div>
 
-      <p className="max-w-sm font-mono text-xs uppercase leading-relaxed tracking-[0.2em] text-ink-soft">
+      <p className="max-w-sm font-mono text-sm leading-relaxed tracking-wide text-ink-soft">
         The office is quiet. The fluorescents hum. Your visitor badge is ready.
       </p>
 

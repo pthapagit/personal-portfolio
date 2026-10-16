@@ -64,7 +64,7 @@ export function PostArticle({
         </div>
       ) : null}
 
-      <div className="prose prose-neutral mt-8 max-w-none prose-headings:font-semibold prose-a:text-office-green prose-img:rounded-lg">
+      <div className="prose prose-neutral mt-8 max-w-none dark:prose-invert prose-headings:font-semibold prose-a:text-office-green prose-img:rounded-lg">
         <MarkdownView>{contentMd}</MarkdownView>
       </div>
 

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { profile, sections } from "@/content";
 import { getSectionContent } from "@/components/ui/sectionContent";
 import { RecentPosts } from "@/components/blog/RecentPosts";
+import ThemeToggle from "@/components/ui/ThemeToggle";
 
 /**
  * The 2D "office floor directory" — server-rendered. This is the mobile /
@@ -39,6 +40,9 @@ export default function Directory2D() {
             >
               Blog
             </Link>
+          </li>
+          <li className="ml-auto">
+            <ThemeToggle className="inline-block px-1.5 py-2 font-mono text-[11px] uppercase tracking-[0.2em] text-ink-soft underline-offset-4 hover:text-ink hover:underline" />
           </li>
         </ul>
       </nav>

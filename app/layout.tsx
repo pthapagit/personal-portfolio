@@ -53,13 +53,24 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#f1ead8",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#f1ead8" },
+    { media: "(prefers-color-scheme: dark)", color: "#1b1a16" },
+  ],
 };
+
+// Resolve the theme before first paint so there's no light-mode flash.
+const themeInit = `(function(){try{var t=localStorage.getItem('theme');if(t!=='light'&&t!=='dark'){t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';}document.documentElement.dataset.theme=t;}catch(e){}})();`;
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable} ${sourceSerif.variable} h-full antialiased`}>
+    <html
+      lang="en"
+      suppressHydrationWarning
+      className={`${geistSans.variable} ${geistMono.variable} ${sourceSerif.variable} h-full antialiased`}
+    >
       <body className="min-h-full">
+        <script dangerouslySetInnerHTML={{ __html: themeInit }} />
         {children}
         <Analytics />
         <SpeedInsights />
