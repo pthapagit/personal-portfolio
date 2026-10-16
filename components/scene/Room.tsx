@@ -5,6 +5,7 @@ import { useFrame } from "@react-three/fiber";
 import type { Group } from "three";
 import { C } from "./palette";
 import { CORRIDOR, ROOM } from "@/lib/sceneConfig";
+import { useTheme } from "@/lib/useTheme";
 
 const { width: RW, depth: RD, height: RH } = ROOM;
 const { width: CW, height: CH, zStart: CZ0, zEnd: CZ1 } = CORRIDOR;
@@ -230,6 +231,11 @@ function WallClock() {
 
 /** Decorative office window (not interactive — no Blog section). */
 function OfficeWindow() {
+  // Bright daylight by day; a faintly glowing dusk sky after hours.
+  const dark = useTheme() === "dark";
+  const pane = dark
+    ? { color: "#1b2740", emissive: "#2a3a57" }
+    : { color: "#e9f0ea", emissive: "#e9f0ea" };
   return (
     <group position={[-2.4, 1.75, -RD / 2 + 0.07]}>
       <mesh>
@@ -238,7 +244,12 @@ function OfficeWindow() {
       </mesh>
       <mesh position={[0, 0, 0.035]}>
         <planeGeometry args={[1.2, 1.4]} />
-        <meshStandardMaterial color="#e9f0ea" emissive="#e9f0ea" emissiveIntensity={0.85} toneMapped={false} />
+        <meshStandardMaterial
+          color={pane.color}
+          emissive={pane.emissive}
+          emissiveIntensity={dark ? 0.4 : 0.85}
+          toneMapped={false}
+        />
       </mesh>
       {Array.from({ length: 7 }).map((_, i) => (
         <mesh key={i} position={[0, 0.58 - i * 0.09, 0.05]}>
