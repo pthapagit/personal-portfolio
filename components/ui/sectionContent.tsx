@@ -59,7 +59,7 @@ export function getSectionContent(id: SectionId): ReactNode {
           </ul>
           <h3 className={h3}>Education</h3>
           {resume.education.map((e) => (
-            <div key={e.school} className="mb-2">
+            <div key={`${e.school}-${e.credential}`} className="mb-2">
               <p className="font-medium">{e.school}</p>
               <p className="text-sm text-ink-soft">
                 {e.credential} · {e.period}

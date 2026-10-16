@@ -12,9 +12,14 @@ const supabaseOrigin = supabaseHost ? `https://${supabaseHost}` : "";
 // source (react-markdown escapes raw HTML + rehype-sanitize); this is
 // defense-in-depth. 'unsafe-inline' is needed for Next's inline bootstrap
 // scripts and Framer Motion's inline styles.
+//
+// 'unsafe-eval' is added ONLY in development, where React uses eval() for
+// debugging features (reconstructing server call stacks, etc.). React never
+// uses eval() in production, so the production CSP stays strict.
+const isDev = process.env.NODE_ENV !== "production";
 const csp = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-inline'",
+  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""}`,
   "style-src 'self' 'unsafe-inline'",
   `img-src 'self' data: blob:${supabaseOrigin ? ` ${supabaseOrigin}` : ""}`,
   "font-src 'self'",
