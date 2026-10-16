@@ -16,16 +16,18 @@ export async function login(
   if (!email || !password) {
     return { error: "Enter your email and password." };
   }
-  // Only the configured admin may sign in. Use the same generic message as a
-  // failed sign-in below so the response doesn't reveal which email is the
-  // admin (no account enumeration).
-  if (!isAdminEmail(email)) {
-    return { error: "Invalid email or password." };
-  }
 
   const supabase = await createSupabaseServerClient();
-  const { error } = await supabase.auth.signInWithPassword({ email, password });
-  if (error) {
+
+  // Attempt the sign-in for ANY email (not just the admin's) so the response
+  // timing is identical regardless of the email tried. Short-circuiting on
+  // isAdminEmail() before the network call used to leak the admin address via
+  // a timing side-channel. The admin check happens after, and a non-admin
+  // session (possible if public signups are on) is immediately discarded.
+  // Brute-force is covered by Supabase's auth rate limiting.
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+  if (error || !isAdminEmail(data.user?.email)) {
+    if (!error) await supabase.auth.signOut();
     return { error: "Invalid email or password." };
   }
 

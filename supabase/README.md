@@ -17,10 +17,14 @@ Current live policy model:
 | Table / bucket | Read | Write |
 | -------------- | ---- | ----- |
 | `public.posts` | anyone: `status = 'published'` rows only | admin account only (`auth.uid()` pinned to the admin user id) |
-| `storage.objects` in `blog-images` | anyone (public bucket) | admin account only (same pin) |
+| `storage.objects` in `blog-images` | objects served by direct public URL (bucket is public); `list`/authenticated read = admin only | admin account only (same pin) |
 
 The `blog-images` bucket also enforces a 10 MB limit and a raster-image MIME
 allow-list (PNG, JPEG, GIF, WebP, AVIF — no SVG) at the storage layer.
+
+Storage SELECT is admin-only so the anon key can't enumerate the bucket via
+`list`. Public image URLs keep working because the bucket is public — if it is
+ever made private, covers must be served via signed URLs instead.
 
 Writes are pinned to the admin **user id**, not the email claim: ids never
 change or get reused, so the policy can't be satisfied by any other account.
@@ -54,4 +58,10 @@ curl -s -X POST "$SUPABASE_URL/rest/v1/posts" \
   -H "Content-Type: application/json" \
   -d '{"title":"x","slug":"x","content_md":"x","status":"published"}'
   # expect: 401 + "new row violates row-level security policy"
+
+# Anonymous bucket enumeration must return no objects:
+curl -s -X POST "$SUPABASE_URL/storage/v1/object/list/blog-images" \
+  -H "apikey: $ANON" -H "Authorization: Bearer $ANON" \
+  -H "Content-Type: application/json" -d '{"prefix":"","limit":100}'
+  # expect: []   (a known public image URL still loads directly)
 ```
